@@ -20,6 +20,8 @@ export default function Board({
   onReset,
   indicatorStrokeColor = INDICATOR_STROKE_COLOR,
   circleBg = CIRCLE_BG,
+  canDraw = false,
+  enableRealTime = false,
 }) {
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -37,7 +39,6 @@ export default function Board({
 
   // lines
   const [lines, setLines] = useState([]);
-  const [strokeColor, setStrokeColor] = useState("black");
 
   // indicator
   const [startPos, setStartPos] = useState(null);
@@ -52,11 +53,13 @@ export default function Board({
   }, [word]);
 
   const handleMouseDown = (circle) => {
-    setIsDrawing(true);
-    setStartCirlce(circle);
-    setStartPos(circle.pos);
-    setTouchedCircles([circle.id]);
-    setWord([circle.letter]);
+    if (canDraw) {
+      setIsDrawing(true);
+      setStartCirlce(circle);
+      setStartPos(circle.pos);
+      setTouchedCircles([circle.id]);
+      setWord([circle.letter]);
+    }
   };
 
   function transformArray(inputArray) {
@@ -76,7 +79,7 @@ export default function Board({
 
   const handleMouseMove = (e) => {
     //console.log(e);
-    if (!isDrawing || !startCircle) {
+    if (!isDrawing || !startCircle || !canDraw) {
       return;
     }
     // Use either mouse or touch event depending on the platform
@@ -125,12 +128,14 @@ export default function Board({
     setStartPos(null);
     setEndPos(null);
     setIsDrawing(false);
-    if (word === correctWord) {
-      setStrokeColor("green");
-      onSelected && onSelected({ word, isCorrect: true });
-    } else {
-      setStrokeColor("red");
-      onSelected && onSelected({ word, isCorrect: false });
+    if (word.length === correctWord.length) {
+      if (word === correctWord) {
+        //setStrokeColor("green");
+        onSelected && onSelected({ word, isCorrect: true });
+      } else {
+        //setStrokeColor("red");
+        onSelected && onSelected({ word, isCorrect: false });
+      }
     }
     setTimeout(() => {
       setLines([]);
@@ -138,7 +143,7 @@ export default function Board({
       setReducedCircleIds([]);
       setStartCirlce(null);
       setWord([]);
-      setStrokeColor("black");
+      //setStrokeColor("black");
       onReset && onReset();
     }, RESET_DELAY);
   };
@@ -159,7 +164,7 @@ export default function Board({
       {lines &&
         lines.map((line, i) => (
           <LineDrawer
-            strokeColor={strokeColor}
+            strokeColor={indicatorStrokeColor}
             key={i}
             startPoint={line.startPos}
             endPoint={line.endPos}
