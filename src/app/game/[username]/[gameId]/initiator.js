@@ -28,6 +28,8 @@ export default function Initiator({ data }) {
   const [circles, setCircles] = useState(null);
   const [selectedBy, setSelectedBy] = useState(null);
 
+  const [drawnWord, setDrawnWord] = useState(null);
+
   useEffect(() => {
     setClientOnly(true);
   }, []);
@@ -138,6 +140,7 @@ export default function Initiator({ data }) {
           AMAZING
         </button>
       )}
+      {currentRound !== loggedUsername && drawnWord && <p>{drawnWord}</p>}
       {clientOnly && isFirstWordSelected && word && circles && selectedBy && (
         <Board
           mainWord={word}
@@ -145,13 +148,19 @@ export default function Initiator({ data }) {
           indicatorStrokeColor={
             currentRound === loggedUsername ? "blue" : "violet"
           }
+          getSelectedWord={(w) => setDrawnWord(w)}
           circleBg={selectedBy === loggedUsername ? "blue" : "violet"}
           canDraw={currentRound === loggedUsername}
+          loggedUsername={loggedUsername}
+          players={[player1, player2]}
           onSelected={(payload) => {
             console.log(payload);
           }}
+          room={room}
+          enableRealTime={true}
         />
       )}
+      {currentRound === loggedUsername && drawnWord && <p>{drawnWord}</p>}
     </div>
   );
 }

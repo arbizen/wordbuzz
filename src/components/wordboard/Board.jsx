@@ -20,8 +20,11 @@ export default function Board({
   onReset,
   indicatorStrokeColor = INDICATOR_STROKE_COLOR,
   circleBg = CIRCLE_BG,
-  canDraw = false,
+  canDraw = true,
   enableRealTime = false,
+  room = null,
+  loggedUsername,
+  players,
 }) {
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -52,7 +55,111 @@ export default function Board({
     }
   }, [word]);
 
+  useEffect(() => {
+    if (room) {
+      // listen to mouse up event
+      room.on("broadcast", { event: "onMouseDown" }, ({ data }) => {
+        const { circle, players } = data;
+        const player2 = players[1];
+        if (player2?.username === loggedUsername) {
+          setIsDrawing(true);
+          setStartCirlce(circle);
+          setStartPos(circle.pos);
+          setTouchedCircles([circle.id]);
+          setWord([circle.letter]);
+        }
+      });
+
+      // listen to mouse up event
+      room.on("broadcast", { event: "onMouseUp" }, ({ data }) => {
+        const { word, correctWord, players } = data;
+        const player2 = players[1];
+        if (player2?.username === loggedUsername) {
+          setStartPos(null);
+          setEndPos(null);
+          setIsDrawing(false);
+          if (word.length > 0) {
+            if (word === correctWord) {
+              //setStrokeColor("green");
+              onSelected && onSelected({ word, isCorrect: true });
+            } else {
+              //setStrokeColor("red");
+              onSelected && onSelected({ word, isCorrect: false });
+            }
+          }
+          setTimeout(() => {
+            setLines([]);
+            setTouchedCircles([]);
+            setReducedCircleIds([]);
+            setStartCirlce(null);
+            setWord([]);
+            //setStrokeColor("black");
+            onReset && onReset();
+          }, RESET_DELAY);
+        }
+      });
+
+      room.on("broadcast", { event: "onMouseMove" }, ({ data }) => {
+        const {
+          pos,
+          circles,
+          startCircle,
+          reducedCircleIds,
+          touchedCircles,
+          players,
+        } = data;
+        const player2 = players[1];
+        if (player2?.username === loggedUsername) {
+          setEndPos(pos);
+          circles.forEach((circle) => {
+            if (
+              circle.id !== startCircle.id &&
+              !reducedCircleIds.includes(circle.id)
+            ) {
+              const collided = checkCollision(circle, pos);
+              if (collided) {
+                setTouchedCircles([...touchedCircles, circle.id]);
+                const reduced = Array.from(new Set(touchedCircles));
+                const letters = reduced.map((id) => {
+                  const c = circles.find((cir) => cir.id === id);
+                  return c.letter;
+                });
+                setWord(letters.join(""));
+                setReducedCircleIds(reduced);
+                const duplicated = duplicateArrayExceptFirstAndLast(reduced);
+                const updatedLines = duplicated.map((id, i) => {
+                  const c = circles.find((cir) => cir.id === id);
+                  if (i % 2 === 0) {
+                    return { startPos: c.pos };
+                  } else {
+                    return { endPos: c.pos };
+                  }
+                });
+                const transformedLines = transformArray(updatedLines);
+                setLines(transformedLines);
+                setStartPos(circle.pos);
+              }
+            }
+          });
+        }
+      });
+    }
+  }, [room]);
+
   const handleMouseDown = (circle) => {
+    if (enableRealTime && canDraw) {
+      if (room) {
+        room.send({
+          type: "broadcast",
+          event: "onMouseDown",
+          data: {
+            circle,
+            players,
+          },
+        });
+      }
+    }
+
     if (canDraw) {
       setIsDrawing(true);
       setStartCirlce(circle);
@@ -90,6 +197,23 @@ export default function Board({
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     const pos = { x, y };
+
+    // if realtime is enable then send handle mouse move event
+    if (enableRealTime && room) {
+      room.send({
+        type: "broadcast",
+        event: "onMouseMove",
+        data: {
+          pos,
+          circles,
+          startCircle,
+          reducedCircleIds,
+          touchedCircles,
+          players,
+        },
+      });
+    }
+
     setEndPos(pos);
 
     circles.forEach((circle) => {
@@ -125,10 +249,21 @@ export default function Board({
   };
 
   const handleMouseUp = () => {
+    if (enableRealTime && room) {
+      room.send({
+        type: "broadcast",
+        event: "onMouseUp",
+        data: {
+          word,
+          correctWord,
+          players,
+        },
+      });
+    }
     setStartPos(null);
     setEndPos(null);
     setIsDrawing(false);
-    if (word.length === correctWord.length) {
+    if (word.length > 0) {
       if (word === correctWord) {
         //setStrokeColor("green");
         onSelected && onSelected({ word, isCorrect: true });
