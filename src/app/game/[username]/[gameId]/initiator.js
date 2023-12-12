@@ -47,7 +47,6 @@ export default function Initiator({ data }) {
             ? payload?.players[1]?.username
             : payload?.players[0]?.username;
         setCurrentRound(nextRound);
-        console.log(nextRound);
       });
     }
   }, [room]);
@@ -61,7 +60,6 @@ export default function Initiator({ data }) {
     setRoom(roomOne);
     roomOne
       .on("broadcast", { event: "second-user-connected" }, ({ payload }) => {
-        console.log(payload?.players);
         setPlayers(payload?.players);
         const p1 = payload?.players[0];
         const p2 = payload?.players[1];
@@ -150,6 +148,7 @@ export default function Initiator({ data }) {
           }
           getSelectedWord={(w) => setDrawnWord(w)}
           circleBg={selectedBy === loggedUsername ? "blue" : "violet"}
+          selectedBy={selectedBy}
           canDraw={currentRound === loggedUsername}
           loggedUsername={loggedUsername}
           players={[player1, player2]}

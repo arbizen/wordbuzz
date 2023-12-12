@@ -25,6 +25,7 @@ export default function Board({
   room = null,
   loggedUsername,
   players,
+  selectedBy,
 }) {
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -39,6 +40,7 @@ export default function Board({
   const [reducedCircleIds, setReducedCircleIds] = useState([]);
   const [word, setWord] = useState("");
   const [correctWord, _] = useState(mainWord);
+  const [circleBgColor, setCircleBgColor] = useState(circleBg);
 
   // lines
   const [lines, setLines] = useState([]);
@@ -46,6 +48,7 @@ export default function Board({
   // indicator
   const [startPos, setStartPos] = useState(null);
   const [endPos, setEndPos] = useState(null);
+  const [currentDrawingUsername, setCurrentDrawingUsername] = useState(null);
 
   // effects
   useEffect(() => {
@@ -54,6 +57,10 @@ export default function Board({
       getSelectedWord(word);
     }
   }, [word]);
+
+  useEffect(() => {
+    setCircleBgColor(circleBg);
+  }, [circleBg]);
 
   useEffect(() => {
     if (room) {
@@ -72,7 +79,7 @@ export default function Board({
 
       // listen to mouse up event
       room.on("broadcast", { event: "onMouseUp" }, ({ data }) => {
-        const { word, correctWord, players } = data;
+        const { word, correctWord, players, selectedBy } = data;
         const player2 = players[1];
         if (player2?.username === loggedUsername) {
           setStartPos(null);
@@ -80,10 +87,10 @@ export default function Board({
           setIsDrawing(false);
           if (word.length > 0) {
             if (word === correctWord) {
-              //setStrokeColor("green");
+              setCircleBgColor("green");
               onSelected && onSelected({ word, isCorrect: true });
             } else {
-              //setStrokeColor("red");
+              setCircleBgColor("red");
               onSelected && onSelected({ word, isCorrect: false });
             }
           }
@@ -93,7 +100,7 @@ export default function Board({
             setReducedCircleIds([]);
             setStartCirlce(null);
             setWord([]);
-            //setStrokeColor("black");
+            setCircleBgColor(selectedBy === loggedUsername ? "blue" : "violet");
             onReset && onReset();
           }, RESET_DELAY);
         }
@@ -249,7 +256,7 @@ export default function Board({
   };
 
   const handleMouseUp = () => {
-    if (enableRealTime && room) {
+    if (enableRealTime && room && canDraw) {
       room.send({
         type: "broadcast",
         event: "onMouseUp",
@@ -257,30 +264,33 @@ export default function Board({
           word,
           correctWord,
           players,
+          selectedBy,
         },
       });
     }
-    setStartPos(null);
-    setEndPos(null);
-    setIsDrawing(false);
-    if (word.length > 0) {
-      if (word === correctWord) {
-        //setStrokeColor("green");
-        onSelected && onSelected({ word, isCorrect: true });
-      } else {
-        //setStrokeColor("red");
-        onSelected && onSelected({ word, isCorrect: false });
+    if (canDraw) {
+      setStartPos(null);
+      setEndPos(null);
+      setIsDrawing(false);
+      if (word.length > 0) {
+        if (word === correctWord) {
+          setCircleBgColor("green");
+          onSelected && onSelected({ word, isCorrect: true });
+        } else {
+          setCircleBgColor("red");
+          onSelected && onSelected({ word, isCorrect: false });
+        }
       }
+      setTimeout(() => {
+        setLines([]);
+        setTouchedCircles([]);
+        setReducedCircleIds([]);
+        setStartCirlce(null);
+        setWord([]);
+        setCircleBgColor(selectedBy === loggedUsername ? "blue" : "violet");
+        onReset && onReset();
+      }, RESET_DELAY);
     }
-    setTimeout(() => {
-      setLines([]);
-      setTouchedCircles([]);
-      setReducedCircleIds([]);
-      setStartCirlce(null);
-      setWord([]);
-      //setStrokeColor("black");
-      onReset && onReset();
-    }, RESET_DELAY);
   };
 
   return (
@@ -322,7 +332,7 @@ export default function Board({
           }}
           text={circle.letter}
           fontSize={LETTER_FONT_SIZE}
-          circleBg={circleBg}
+          circleBg={circleBgColor}
         />
       ))}
     </svg>
