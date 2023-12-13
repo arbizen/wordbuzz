@@ -10,6 +10,8 @@ import {
   LETTER_FONT_SIZE,
   CIRCLE_BG,
   CANVAS_DIMENTION,
+  CIRLCE_BG_FOR_PLAYER_ONE,
+  CIRLCE_BG_FOR_PLAYER_TWO,
 } from "./constants";
 
 export default function Board({
@@ -87,10 +89,11 @@ export default function Board({
           setIsDrawing(false);
           if (word.length > 0) {
             if (word === correctWord) {
-              setCircleBgColor("green");
+              setCircleBgColor("#22C55E");
+
               onSelected && onSelected({ word, isCorrect: true });
             } else {
-              setCircleBgColor("red");
+              setCircleBgColor("#EF4444");
               onSelected && onSelected({ word, isCorrect: false });
             }
           }
@@ -100,7 +103,11 @@ export default function Board({
             setReducedCircleIds([]);
             setStartCirlce(null);
             setWord([]);
-            setCircleBgColor(selectedBy === loggedUsername ? "blue" : "violet");
+            setCircleBgColor(
+              selectedBy === loggedUsername
+                ? CIRLCE_BG_FOR_PLAYER_ONE
+                : CIRLCE_BG_FOR_PLAYER_TWO
+            );
             onReset && onReset();
           }, RESET_DELAY);
         }
@@ -274,10 +281,10 @@ export default function Board({
       setIsDrawing(false);
       if (word.length > 0) {
         if (word === correctWord) {
-          setCircleBgColor("green");
+          setCircleBgColor("#22C55E");
           onSelected && onSelected({ word, isCorrect: true });
         } else {
-          setCircleBgColor("red");
+          setCircleBgColor("#EF4444");
           onSelected && onSelected({ word, isCorrect: false });
         }
       }
@@ -287,7 +294,11 @@ export default function Board({
         setReducedCircleIds([]);
         setStartCirlce(null);
         setWord([]);
-        setCircleBgColor(selectedBy === loggedUsername ? "blue" : "violet");
+        setCircleBgColor(
+          selectedBy === loggedUsername
+            ? CIRLCE_BG_FOR_PLAYER_ONE
+            : CIRLCE_BG_FOR_PLAYER_TWO
+        );
         onReset && onReset();
       }, RESET_DELAY);
     }
@@ -300,7 +311,7 @@ export default function Board({
       onMouseUp={handleMouseUp}
       onTouchEnd={handleMouseUp}
       onTouchMove={handleMouseMove}
-      className="rounded-lg select-none bg-slate-100"
+      className="rounded-lg select-none"
       style={{
         height: `${CANVAS_DIMENTION}px`,
         width: `${CANVAS_DIMENTION}px`,

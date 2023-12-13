@@ -1,8 +1,10 @@
+import { CANVAS_DIMENTION } from "@/components/wordboard/constants";
+
 export function generateCirclesForWord(
   word,
   radius,
-  canvasWidth = 300,
-  canvasHeight = 300
+  canvasWidth = CANVAS_DIMENTION,
+  canvasHeight = CANVAS_DIMENTION
 ) {
   const circles = [];
   const shuffledWord = word.split("").sort(() => Math.random() - 0.5); // Shuffle the letters

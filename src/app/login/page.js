@@ -10,8 +10,11 @@ export default function Login() {
 
   // write a function that takes in username and signs in the user with github
   const handleGithubSignIn = async () => {
-    const { user, error } = await supabase.auth.signIn({
+    const { user, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
     });
     if (error) {
       console.log(error);

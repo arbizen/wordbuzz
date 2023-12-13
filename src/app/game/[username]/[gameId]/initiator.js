@@ -5,11 +5,65 @@ import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Board from "@/components/wordboard/Board";
 import { generateCirclesForWord } from "@/utils/generateCircles";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import {
+  CIRLCE_BG_FOR_PLAYER_ONE,
+  CIRLCE_BG_FOR_PLAYER_TWO,
+} from "@/components/wordboard/constants";
+import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 const client = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
+
+export const Layout = ({ children }) => {
+  return (
+    <div className="flex flex-col h-screen w-screen bg-[#101619] overflow-hidden">
+      {children}{" "}
+    </div>
+  );
+};
+
+export const Info = ({ children }) => {
+  return <p className="text-slate-400 text-sm">{children} </p>;
+};
+
+export const WaitingScreen = () => {
+  const { toast } = useToast();
+  const handleCopy = () => {
+    navigator.clipboard.writeText(location.href);
+    toast({
+      title: "Copied to clipboard",
+    });
+  };
+  return (
+    <div className="flex flex-col justify-center items-center gap-6">
+      <svg
+        width="300"
+        height="300"
+        viewBox="0 0 300 300"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="150" cy="150" r="49.5" stroke="#1D2539" />
+        <circle cx="150" cy="150" r="24.5" stroke="#1D2539" />
+        <circle cx="149.5" cy="150.5" r="12" stroke="#1D2539" />
+        <circle cx="150" cy="150" r="99.5" stroke="#1D2539" />
+        <circle cx="150" cy="150" r="149.5" stroke="#1D2539" />
+      </svg>
+      <div className="flex gap-2 flex-wrap items-center justify-center">
+        <p className="px-2 py-1.5 flex items-center border border-[#1D2539] rounded-md text-slate-400 text-sm">
+          {location.href}
+        </p>
+        <Button onClick={handleCopy}>Copy link</Button>
+      </div>
+    </div>
+  );
+};
 
 export default function Initiator({ data }) {
   const gameId = data?.gameId;
@@ -22,13 +76,42 @@ export default function Initiator({ data }) {
   const [player2, setPlayer2] = useState(null);
   const [currentRound, setCurrentRound] = useState(null);
   const [clientOnly, setClientOnly] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const [isFirstWordSelected, setIsFirstWordSelected] = useState(null);
   const [word, setWord] = useState(null);
+  const [isSelectedCorrect, setIsSelectedCorrect] = useState(null);
   const [circles, setCircles] = useState(null);
   const [selectedBy, setSelectedBy] = useState(null);
 
   const [drawnWord, setDrawnWord] = useState(null);
+  const [showSelectWordTimer, setShowSelectWordTimer] = useState(true);
+  const [isWordSelectionTimeOut, setIsWordSelectionTimeOut] = useState(false);
+  const [isDrawingTime, setIsDrawingTime] = useState(false);
+  const [randomWords, setRandomWords] = useState([
+    "LOVE",
+    "AMAZING",
+    "HAPPY",
+    "SAD",
+    "ANGRY",
+    "SLEEPY",
+    "TIRED",
+    "HUNGRY",
+    "THIRSTY",
+    "HOT",
+    "COLD",
+    "SICK",
+  ]);
+
+  // write a function that takes an array of words and then return three random words from them
+  const getRandomWords = (words) => {
+    const randomWords = [];
+    for (let i = 0; i < 3; i++) {
+      const randomIndex = Math.floor(Math.random() * words.length);
+      randomWords.push(words[randomIndex]);
+    }
+    return randomWords;
+  };
 
   useEffect(() => {
     setClientOnly(true);
@@ -41,6 +124,7 @@ export default function Initiator({ data }) {
         setCircles(payload?.circles);
         setIsFirstWordSelected(true);
         setSelectedBy(payload?.selectedBy);
+        setIsDrawingTime(true);
         // if first word is selected, then set the current round to the other user
         const nextRound =
           payload?.selectedBy === payload?.players[0]?.username
@@ -61,6 +145,7 @@ export default function Initiator({ data }) {
     roomOne
       .on("broadcast", { event: "second-user-connected" }, ({ payload }) => {
         setPlayers(payload?.players);
+        setIsConnected(true);
         const p1 = payload?.players[0];
         const p2 = payload?.players[1];
         const player1ptions = {
@@ -122,44 +207,275 @@ export default function Initiator({ data }) {
   };
 
   return (
-    <div className="h-screen w-screen">
-      <p>current round: {currentRound}</p>
-      {player1 && player2 && (
-        <p>
-          User 1:{player1?.username} - User 2:{player2?.username}
-        </p>
-      )}
-      {currentRound && currentRound === loggedUsername && (
-        <button
-          onClick={() => {
-            handleWordSelection("AMAZING");
-          }}
-        >
-          AMAZING
-        </button>
-      )}
-      {currentRound !== loggedUsername && drawnWord && <p>{drawnWord}</p>}
-      {clientOnly && isFirstWordSelected && word && circles && selectedBy && (
-        <Board
-          mainWord={word}
-          circles={circles}
-          indicatorStrokeColor={
-            currentRound === loggedUsername ? "blue" : "violet"
-          }
-          getSelectedWord={(w) => setDrawnWord(w)}
-          circleBg={selectedBy === loggedUsername ? "blue" : "violet"}
-          selectedBy={selectedBy}
-          canDraw={currentRound === loggedUsername}
-          loggedUsername={loggedUsername}
-          players={[player1, player2]}
-          onSelected={(payload) => {
-            console.log(payload);
-          }}
-          room={room}
-          enableRealTime={true}
-        />
-      )}
-      {currentRound === loggedUsername && drawnWord && <p>{drawnWord}</p>}
-    </div>
+    // <div className="h-screen w-screen">
+    //   <p>current round: {currentRound}</p>
+    //   {player1 && player2 && (
+    //     <p>
+    //       User 1:{player1?.username} - User 2:{player2?.username}
+    //     </p>
+    //   )}
+    //   {currentRound && currentRound === loggedUsername && (
+    //     <button
+    //       onClick={() => {
+    //         handleWordSelection("AMAZING");
+    //       }}
+    //     >
+    //       AMAZING
+    //     </button>
+    //   )}
+    //   {currentRound !== loggedUsername && drawnWord && <p>{drawnWord}</p>}
+    //   {clientOnly && isFirstWordSelected && word && circles && selectedBy && (
+    //     <Board
+    //       mainWord={word}
+    //       circles={circles}
+    //       indicatorStrokeColor={
+    //         currentRound === loggedUsername ? "blue" : "violet"
+    //       }
+    //       getSelectedWord={(w) => setDrawnWord(w)}
+    //       circleBg={selectedBy === loggedUsername ? "blue" : "violet"}
+    //       selectedBy={selectedBy}
+    //       canDraw={currentRound === loggedUsername}
+    //       loggedUsername={loggedUsername}
+    //       players={[player1, player2]}
+    //       onSelected={(payload) => {
+    //         console.log(payload);
+    //       }}
+    //       room={room}
+    //       enableRealTime={true}
+    //     />
+    //   )}
+    //   {currentRound === loggedUsername && drawnWord && <p>{drawnWord}</p>}
+    // </div>
+    <Layout>
+      <header className="py-6 px-4 border-b border-b-[#1D2539] flex justify-between items-center min-h-[80px]">
+        {!isConnected && (
+          <div className="w-full text-center">
+            <Info>
+              {initiatorUsername === loggedUsername
+                ? "Waiting for the other player to connect..."
+                : "Connecting..."}
+            </Info>
+          </div>
+        )}
+        {player1 && player2 && (
+          <>
+            <div className="flex gap-4 items-center font-bold text-sm text-violet-500">
+              <Image
+                className="rounded-full"
+                src={
+                  player2?.user?.user_metadata?.picture ??
+                  "https://gravatar.com/avatar/a58aa744b49b737a8f3b36009005b5aa?s=200&d=robohash&r=x"
+                }
+                height={40}
+                width={40}
+              />
+              <h3>{player2?.user?.user_metadata?.full_name}</h3>
+            </div>
+            {!isDrawingTime && (
+              <>
+                {currentRound !== player2?.username ? (
+                  <Info>Awaiting word...</Info>
+                ) : (
+                  <Info>Sending a word...</Info>
+                )}
+              </>
+            )}
+            {isDrawingTime && currentRound === player2?.username && (
+              <CountdownCircleTimer
+                size={35}
+                strokeWidth={2}
+                isPlaying
+                duration={60}
+                colors={["#8B5CF6"]}
+                onComplete={() => {
+                  setIsDrawingTime(false);
+                  setIsWordSelectionTimeOut(false);
+                }}
+              >
+                {({ remainingTime }) => (
+                  <p className="text-sm text-slate-400">{remainingTime}</p>
+                )}
+              </CountdownCircleTimer>
+            )}
+          </>
+        )}
+        {/* <div>
+          <div className="flex gap-4 items-center">
+            <CountdownCircleTimer
+              size={35}
+              strokeWidth={2}
+              isPlaying
+              duration={15}
+              colors={["#8B5CF6"]}
+            >
+              {({ remainingTime }) => (
+                <p className="text-sm text-slate-400">{remainingTime}</p>
+              )}
+            </CountdownCircleTimer>
+          </div>
+        </div> */}
+      </header>
+      <main className="flex-1 flex justify-center items-center">
+        {!isConnected && initiatorUsername === loggedUsername && (
+          <WaitingScreen />
+        )}
+        {isConnected &&
+          !isFirstWordSelected &&
+          currentRound === loggedUsername &&
+          !isWordSelectionTimeOut && (
+            <Info>Click one of the words to send.</Info>
+          )}
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex gap-2">
+            {drawnWord &&
+              loggedUsername !== currentRound &&
+              [...drawnWord].map((w) => (
+                <div
+                  className={`py-2 px-3 rounded-md bg-violet-500 text-white`}
+                >
+                  {w}
+                </div>
+              ))}
+          </div>
+          {clientOnly &&
+            isFirstWordSelected &&
+            word &&
+            circles &&
+            selectedBy &&
+            isDrawingTime && (
+              <Board
+                mainWord={word}
+                circles={circles}
+                indicatorStrokeColor={
+                  currentRound === loggedUsername
+                    ? CIRLCE_BG_FOR_PLAYER_ONE
+                    : CIRLCE_BG_FOR_PLAYER_TWO
+                }
+                getSelectedWord={(w) => setDrawnWord(w)}
+                circleBg={
+                  selectedBy === loggedUsername
+                    ? CIRLCE_BG_FOR_PLAYER_ONE
+                    : CIRLCE_BG_FOR_PLAYER_TWO
+                }
+                selectedBy={selectedBy}
+                canDraw={currentRound === loggedUsername}
+                loggedUsername={loggedUsername}
+                players={[player1, player2]}
+                onSelected={(payload) => {
+                  const isCorrect = payload.isCorrect;
+                  console.log(payload);
+                  setIsSelectedCorrect(payload.isCorrect);
+                  if (isCorrect) {
+                    setTimeout(() => {
+                      setIsDrawingTime(false);
+                      setIsWordSelectionTimeOut(false);
+                      setIsSelectedCorrect(null);
+                    }, 1000);
+                  }
+                }}
+                room={room}
+                enableRealTime={true}
+              />
+            )}
+          <div className="flex gap-2">
+            {drawnWord &&
+              loggedUsername === currentRound &&
+              [...drawnWord].map((w) => (
+                <div className={`py-2 px-3 rounded-md bg-blue-500 text-white`}>
+                  {w}
+                </div>
+              ))}
+          </div>
+        </div>
+      </main>
+      <footer className="py-6 px-4 border-t border-t-[#1D2539] flex justify-between items-center text-white">
+        <div className="flex gap-4 items-center font-bold text-sm text-blue-500">
+          <Image
+            className="rounded-full"
+            src={
+              loggedUser?.user_metadata?.picture ??
+              "https://gravatar.com/avatar/a58aa744b49b737a8f3b36009005b5aa?s=400&d=wavatar&r=x"
+            }
+            height={40}
+            width={40}
+          />
+          <h3>{loggedUser?.user_metadata?.full_name ?? "No name panda"}</h3>
+        </div>
+        {!isConnected && initiatorUsername === loggedUsername && (
+          <Info>Copy the link and invite a friend.</Info>
+        )}
+        {isDrawingTime && currentRound !== loggedUsername && (
+          <Info>
+            You have sent the word <span className="text-blue-500">{word}</span>
+          </Info>
+        )}
+        {isConnected &&
+          currentRound === loggedUsername &&
+          !isWordSelectionTimeOut &&
+          !isDrawingTime && (
+            <div className="flex gap-2">
+              {getRandomWords(randomWords).map((word, i) => (
+                <Button
+                  key={i}
+                  onClick={() => {
+                    handleWordSelection(word);
+                  }}
+                  variant="outline"
+                  className="border-blue-500 text-blue-500 hover:bg-blue-400"
+                >
+                  {word}
+                </Button>
+              ))}
+            </div>
+          )}
+        <div>
+          <div className="flex gap-4 items-center">
+            {isDrawingTime && currentRound === loggedUsername && (
+              <CountdownCircleTimer
+                size={35}
+                strokeWidth={2}
+                isPlaying
+                duration={60}
+                colors={["#3B82F6"]}
+                onComplete={() => {
+                  setIsDrawingTime(false);
+                  setIsWordSelectionTimeOut(false);
+                }}
+              >
+                {({ remainingTime }) => (
+                  <p className="text-sm text-slate-400">{remainingTime}</p>
+                )}
+              </CountdownCircleTimer>
+            )}
+            {isConnected &&
+              currentRound === loggedUsername &&
+              !isWordSelectionTimeOut &&
+              !isDrawingTime && (
+                <CountdownCircleTimer
+                  size={35}
+                  strokeWidth={2}
+                  isPlaying
+                  duration={15}
+                  colors={["#3B82F6"]}
+                  onComplete={() => {
+                    setIsWordSelectionTimeOut(true);
+                    handleWordSelection("AMAZING");
+                    return {
+                      shouldRepeat: false,
+                    };
+                  }}
+                >
+                  {({ remainingTime }) => (
+                    <p className="text-sm text-slate-400">{remainingTime}</p>
+                  )}
+                </CountdownCircleTimer>
+              )}
+            <Button className="text-sm" variant="destructive">
+              Exit game
+            </Button>
+          </div>
+        </div>
+      </footer>
+    </Layout>
   );
 }
