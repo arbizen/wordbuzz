@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
+import path from "path";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 
@@ -9,7 +10,8 @@ const getRandomElements = (array, count) => {
 };
 
 export async function GET(request) {
-  const data = await fs.readFile(process.cwd() + "/public/words.txt", "utf8");
+  const filePath = path.join(process.cwd(), "public/words.txt");
+  const data = await fs.readFile(filePath, "utf8");
   const words = data
     .split("\n")
     .map((line) => line.trim()) // Trim whitespace
