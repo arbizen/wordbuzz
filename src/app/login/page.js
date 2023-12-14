@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -46,10 +47,94 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen flex-col">
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleGithubSignIn}>Sign In with Github</button>
-      <button onClick={handleGoogleSignIn}>Sign In with Google</button>
+    <div className="flex items-center justify-start h-screen flex-col bg-[#101619] gap-6 md:gap-8 overflow-hidden">
+      <svg
+        className="h-[400px] w-[800px] md:h-[500px] md:w-[1000px]"
+        viewBox="0 0 1000 500"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="500"
+          cy="-3.8147e-05"
+          r="82.8333"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="500"
+          cy="4.19617e-05"
+          r="41.1667"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="499.167"
+          cy="0.833334"
+          r="20.3333"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="500"
+          cy="1.52588e-05"
+          r="166.167"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="500"
+          r="249.5"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="500"
+          cy="3.05176e-05"
+          r="332.833"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="500"
+          r="416.167"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+        <circle
+          cx="500"
+          r="499.5"
+          stroke="#1D2539"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="5 10"
+        />
+      </svg>
+      <div className="space-y-4 flex flex-col">
+        <Button className="min-w-[300px]" onClick={handleGoogleSignIn}>
+          Sign In with Google
+        </Button>
+        <Button
+          className="bg-violet-500 hover:bg-violet-600"
+          onClick={handleGithubSignIn}
+        >
+          Sign In with Github
+        </Button>
+      </div>
     </div>
   );
 }
