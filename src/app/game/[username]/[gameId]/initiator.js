@@ -55,8 +55,8 @@ export const WaitingScreen = () => {
         <circle cx="150" cy="150" r="99.5" stroke="#1D2539" />
         <circle cx="150" cy="150" r="149.5" stroke="#1D2539" />
       </svg>
-      <div className="flex gap-2 flex-wrap items-center justify-center">
-        <p className="px-2 py-1.5 flex items-center border border-[#1D2539] rounded-md text-slate-400 text-sm">
+      <div className="flex gap-2 flex-wrap items-center justify-center max-w-[280px] md:max-w-full">
+        <p className="px-2 py-1.5 flex items-center border border-[#1D2539] rounded-md text-slate-400 text-sm truncate overflow-x-scroll">
           {location.href}
         </p>
         <Button onClick={handleCopy} asChild>
@@ -364,12 +364,12 @@ export default function Initiator({ data }) {
             height={40}
             width={40}
           />
-          <h3 className="hidden md:visible">
+          <h3 className="hidden md:block">
             {loggedUser?.user_metadata?.full_name ?? "No name panda"}
           </h3>
         </div>
         {!isConnected && initiatorUsername === loggedUsername && (
-          <Info className="hidden md:visible">
+          <Info className="hidden md:block">
             Copy the link and invite a friend.
           </Info>
         )}
@@ -440,7 +440,7 @@ export default function Initiator({ data }) {
                   )}
                 </CountdownCircleTimer>
               )}
-            <Button className="text-sm hidden md:visible" variant="destructive">
+            <Button className="text-sm hidden md:block" variant="destructive">
               Exit game
             </Button>
           </div>
