@@ -15,6 +15,15 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import Clipboard from "react-clipboard.js";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 const client = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -87,23 +96,13 @@ export default function Initiator({ data }) {
   const [selectedBy, setSelectedBy] = useState(null);
 
   const [drawnWord, setDrawnWord] = useState(null);
-  const [showSelectWordTimer, setShowSelectWordTimer] = useState(true);
   const [isWordSelectionTimeOut, setIsWordSelectionTimeOut] = useState(false);
   const [isDrawingTime, setIsDrawingTime] = useState(false);
-  const [randomWords, setRandomWords] = useState([
-    "LOVE",
-    "AMAZING",
-    "HAPPY",
-    "SAD",
-    "ANGRY",
-    "SLEEPY",
-    "TIRED",
-    "HUNGRY",
-    "THIRSTY",
-    "HOT",
-    "COLD",
-    "SICK",
-  ]);
+  const [randomWords, setRandomWords] = useState([]);
+  const [isEnd, setIsEnd] = useState(false);
+  const [endedBy, setEndedBy] = useState(null);
+  const router = useRouter();
+  const [ifExiting, setIfExiting] = useState(false);
 
   // write a function that takes an array of words and then return three random words from them
   const getRandomWords = (words) => {
@@ -120,6 +119,18 @@ export default function Initiator({ data }) {
   }, []);
 
   useEffect(() => {
+    const fetchRandomwords = async () => {
+      // fetch random words from /api/words
+      const res = await fetch("/api/words");
+      const data = await res.json();
+      const randomWords = data?.words;
+      console.log(randomWords);
+      setRandomWords(randomWords);
+    };
+    fetchRandomwords();
+  }, [currentRound]);
+
+  useEffect(() => {
     if (room) {
       room.on("broadcast", { event: "word-selected" }, ({ payload }) => {
         setWord(payload?.word);
@@ -133,6 +144,11 @@ export default function Initiator({ data }) {
             ? payload?.players[1]?.username
             : payload?.players[0]?.username;
         setCurrentRound(nextRound);
+      });
+
+      room.on("broadcast", { event: "game-ended" }, ({ payload }) => {
+        setIsEnd(true);
+        setEndedBy(payload?.user);
       });
     }
   }, [room]);
@@ -208,6 +224,55 @@ export default function Initiator({ data }) {
     });
   };
 
+  const handleExitGame = () => {
+    setIfExiting(true);
+    if (room) {
+      room.send({
+        type: "broadcast",
+        event: "game-ended",
+        payload: {
+          user: loggedUsername,
+        },
+      });
+    }
+    router.push("/game");
+  };
+
+  if (isEnd && loggedUsername !== endedBy) {
+    return (
+      <Layout>
+        <div className="flex flex-col justify-center items-center h-full gap-6">
+          <svg
+            className="h-[250px] w-[250px] md:h-[300px] md:w-[300px]"
+            viewBox="0 0 300 300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="150" cy="150" r="49.5" stroke="#1D2539" />
+            <circle cx="150" cy="150" r="24.5" stroke="#1D2539" />
+            <circle cx="150" cy="150" r="99.5" stroke="#1D2539" />
+            <circle cx="150" cy="150" r="149.5" stroke="#1D2539" />
+            <path
+              d="M145.58 154.419L154.42 145.581M145.58 145.581L154.42 154.419"
+              stroke="#1D2539"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+          <Info>
+            <span className="text-blue-500 font-bold">{endedBy}</span> left the
+            game!
+          </Info>
+          <Button variant="link" asChild>
+            <Link className="flex gap-2 items-center" href={"/game"}>
+              <ArrowLeft size={20} /> Go back to home
+            </Link>
+          </Button>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <header className="py-6 px-4 border-b border-b-[#1D2539] flex justify-between items-center md:min-h-[80px]">
@@ -263,21 +328,6 @@ export default function Initiator({ data }) {
             )}
           </>
         )}
-        {/* <div>
-          <div className="flex gap-4 items-center">
-            <CountdownCircleTimer
-              size={35}
-              strokeWidth={2}
-              isPlaying
-              duration={15}
-              colors={["#8B5CF6"]}
-            >
-              {({ remainingTime }) => (
-                <p className="text-sm text-slate-400">{remainingTime}</p>
-              )}
-            </CountdownCircleTimer>
-          </div>
-        </div> */}
       </header>
       <main className="flex-1 flex justify-center items-center">
         {!isConnected && initiatorUsername === loggedUsername && (
@@ -293,8 +343,9 @@ export default function Initiator({ data }) {
           <div className="flex gap-2">
             {drawnWord &&
               loggedUsername !== currentRound &&
-              [...drawnWord].map((w) => (
+              [...drawnWord].map((w, i) => (
                 <div
+                  key={i}
                   className={`py-2 px-3 rounded-md bg-violet-500 text-white`}
                 >
                   {w}
@@ -344,8 +395,11 @@ export default function Initiator({ data }) {
           <div className="flex gap-2">
             {drawnWord &&
               loggedUsername === currentRound &&
-              [...drawnWord].map((w) => (
-                <div className={`py-2 px-3 rounded-md bg-blue-500 text-white`}>
+              [...drawnWord].map((w, i) => (
+                <div
+                  key={i}
+                  className={`py-2 px-3 rounded-md bg-blue-500 text-white`}
+                >
                   {w}
                 </div>
               ))}
@@ -354,16 +408,34 @@ export default function Initiator({ data }) {
       </main>
       <footer className="py-6 px-4 border-t border-t-[#1D2539] flex justify-between items-center text-white">
         <div className="flex gap-4 items-center font-bold text-sm text-blue-500">
-          <Image
-            className="rounded-full"
-            alt="player1"
-            src={
-              loggedUser?.user_metadata?.picture ??
-              "https://gravatar.com/avatar/a58aa744b49b737a8f3b36009005b5aa?s=400&d=wavatar&r=x"
-            }
-            height={40}
-            width={40}
-          />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Image
+                className="rounded-full"
+                alt="player1"
+                src={
+                  loggedUser?.user_metadata?.picture ??
+                  "https://gravatar.com/avatar/a58aa744b49b737a8f3b36009005b5aa?s=400&d=wavatar&r=x"
+                }
+                height={40}
+                width={40}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="md:hidden bg-[#101619] border-[#1D2539]">
+              <h3 className="block text-blue-500 w-full text-center mb-2">
+                {loggedUser?.user_metadata?.full_name ?? "No name panda"}
+              </h3>
+              <Separator className="w-full bg-[#1D2539] mb-4" />
+              <Button
+                onClick={handleExitGame}
+                className="text-sm w-full"
+                variant="destructive"
+              >
+                {ifExiting ? "Leaving..." : "Leave game"}
+              </Button>
+            </PopoverContent>
+          </Popover>
+
           <h3 className="hidden md:block">
             {loggedUser?.user_metadata?.full_name ?? "No name panda"}
           </h3>
@@ -383,7 +455,7 @@ export default function Initiator({ data }) {
           !isWordSelectionTimeOut &&
           !isDrawingTime && (
             <div className="flex gap-2">
-              {getRandomWords(randomWords).map((word, i) => (
+              {randomWords.map((word, i) => (
                 <Button
                   key={i}
                   onClick={() => {
@@ -429,7 +501,9 @@ export default function Initiator({ data }) {
                   colors={["#3B82F6"]}
                   onComplete={() => {
                     setIsWordSelectionTimeOut(true);
-                    handleWordSelection("AMAZING");
+                    handleWordSelection(
+                      randomWords[Math.floor(Math.random() * 3)]
+                    );
                     return {
                       shouldRepeat: false,
                     };
@@ -440,8 +514,12 @@ export default function Initiator({ data }) {
                   )}
                 </CountdownCircleTimer>
               )}
-            <Button className="text-sm hidden md:block" variant="destructive">
-              Exit game
+            <Button
+              onClick={handleExitGame}
+              className="text-sm hidden md:block"
+              variant="destructive"
+            >
+              {ifExiting ? "Leaving..." : "Leave game"}
             </Button>
           </div>
         </div>
