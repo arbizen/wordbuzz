@@ -14,6 +14,7 @@ import {
 } from "@/components/wordboard/constants";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import Clipboard from "react-clipboard.js";
 
 const client = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -22,20 +23,20 @@ const client = createClient(
 
 export const Layout = ({ children }) => {
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#101619] overflow-hidden">
+    <div className="pb-12 md:pb-0 flex flex-col h-screen w-screen bg-[#101619] relative overflow-hidden">
       {children}{" "}
     </div>
   );
 };
 
-export const Info = ({ children }) => {
-  return <p className="text-slate-400 text-sm">{children} </p>;
+export const Info = ({ children, className }) => {
+  return <p className={cn("text-slate-400 text-sm", className)}>{children} </p>;
 };
 
 export const WaitingScreen = () => {
   const { toast } = useToast();
   const handleCopy = () => {
-    navigator.clipboard.writeText(location.href);
+    //navigator.clipboard.writeText(location.href);
     toast({
       title: "Copied to clipboard",
     });
@@ -43,8 +44,7 @@ export const WaitingScreen = () => {
   return (
     <div className="flex flex-col justify-center items-center gap-6">
       <svg
-        width="300"
-        height="300"
+        className="h-[250px] w-[250px] md:h-[300px] md:w-[300px]"
         viewBox="0 0 300 300"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,9 @@ export const WaitingScreen = () => {
         <p className="px-2 py-1.5 flex items-center border border-[#1D2539] rounded-md text-slate-400 text-sm">
           {location.href}
         </p>
-        <Button onClick={handleCopy}>Copy link</Button>
+        <Button onClick={handleCopy} asChild>
+          <Clipboard data-clipboard-text={location.href}>Copy link</Clipboard>
+        </Button>
       </div>
     </div>
   );
@@ -207,47 +209,8 @@ export default function Initiator({ data }) {
   };
 
   return (
-    // <div className="h-screen w-screen">
-    //   <p>current round: {currentRound}</p>
-    //   {player1 && player2 && (
-    //     <p>
-    //       User 1:{player1?.username} - User 2:{player2?.username}
-    //     </p>
-    //   )}
-    //   {currentRound && currentRound === loggedUsername && (
-    //     <button
-    //       onClick={() => {
-    //         handleWordSelection("AMAZING");
-    //       }}
-    //     >
-    //       AMAZING
-    //     </button>
-    //   )}
-    //   {currentRound !== loggedUsername && drawnWord && <p>{drawnWord}</p>}
-    //   {clientOnly && isFirstWordSelected && word && circles && selectedBy && (
-    //     <Board
-    //       mainWord={word}
-    //       circles={circles}
-    //       indicatorStrokeColor={
-    //         currentRound === loggedUsername ? "blue" : "violet"
-    //       }
-    //       getSelectedWord={(w) => setDrawnWord(w)}
-    //       circleBg={selectedBy === loggedUsername ? "blue" : "violet"}
-    //       selectedBy={selectedBy}
-    //       canDraw={currentRound === loggedUsername}
-    //       loggedUsername={loggedUsername}
-    //       players={[player1, player2]}
-    //       onSelected={(payload) => {
-    //         console.log(payload);
-    //       }}
-    //       room={room}
-    //       enableRealTime={true}
-    //     />
-    //   )}
-    //   {currentRound === loggedUsername && drawnWord && <p>{drawnWord}</p>}
-    // </div>
     <Layout>
-      <header className="py-6 px-4 border-b border-b-[#1D2539] flex justify-between items-center min-h-[80px]">
+      <header className="py-6 px-4 border-b border-b-[#1D2539] flex justify-between items-center md:min-h-[80px]">
         {!isConnected && (
           <div className="w-full text-center">
             <Info>
@@ -262,6 +225,7 @@ export default function Initiator({ data }) {
             <div className="flex gap-4 items-center font-bold text-sm text-violet-500">
               <Image
                 className="rounded-full"
+                alt="player2"
                 src={
                   player2?.user?.user_metadata?.picture ??
                   "https://gravatar.com/avatar/a58aa744b49b737a8f3b36009005b5aa?s=200&d=robohash&r=x"
@@ -392,6 +356,7 @@ export default function Initiator({ data }) {
         <div className="flex gap-4 items-center font-bold text-sm text-blue-500">
           <Image
             className="rounded-full"
+            alt="player1"
             src={
               loggedUser?.user_metadata?.picture ??
               "https://gravatar.com/avatar/a58aa744b49b737a8f3b36009005b5aa?s=400&d=wavatar&r=x"
@@ -399,10 +364,14 @@ export default function Initiator({ data }) {
             height={40}
             width={40}
           />
-          <h3>{loggedUser?.user_metadata?.full_name ?? "No name panda"}</h3>
+          <h3 className="hidden md:visible">
+            {loggedUser?.user_metadata?.full_name ?? "No name panda"}
+          </h3>
         </div>
         {!isConnected && initiatorUsername === loggedUsername && (
-          <Info>Copy the link and invite a friend.</Info>
+          <Info className="hidden md:visible">
+            Copy the link and invite a friend.
+          </Info>
         )}
         {isDrawingTime && currentRound !== loggedUsername && (
           <Info>
@@ -420,6 +389,7 @@ export default function Initiator({ data }) {
                   onClick={() => {
                     handleWordSelection(word);
                   }}
+                  size="sm"
                   variant="outline"
                   className="border-blue-500 text-blue-500 hover:bg-blue-400"
                 >
@@ -470,7 +440,7 @@ export default function Initiator({ data }) {
                   )}
                 </CountdownCircleTimer>
               )}
-            <Button className="text-sm" variant="destructive">
+            <Button className="text-sm hidden md:visible" variant="destructive">
               Exit game
             </Button>
           </div>
