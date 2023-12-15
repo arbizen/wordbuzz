@@ -106,7 +106,8 @@ export default function Initiator({ data }) {
 
   useEffect(() => {
     // handle tab close
-    window.addEventListener("beforeunload", async () => {
+    window.addEventListener("beforeunload", async (event) => {
+      event.preventDefault();
       if (initiatorUsername === loggedUsername) {
         await client.from("board").delete().eq("gameId", gameId);
       }
@@ -119,6 +120,7 @@ export default function Initiator({ data }) {
           },
         });
       }
+      return (event.returnValue = "Are you sure you want to exit?");
     });
     return () => {
       window.removeEventListener("beforeunload", () => {});
@@ -252,6 +254,11 @@ export default function Initiator({ data }) {
     router.push("/game");
   };
 
+  const handleRemoveRoom = async () => {
+    if (initiatorUsername === loggedUsername)
+      await client.from("board").delete().eq("gameId", gameId);
+  };
+
   if (isEnd && loggedUsername !== endedBy) {
     return (
       <Layout>
@@ -277,7 +284,7 @@ export default function Initiator({ data }) {
             <span className="text-blue-500 font-bold">{endedBy}</span> left the
             game!
           </Info>
-          <Button variant="link" asChild>
+          <Button onClick={handleRemoveRoom} variant="link" asChild>
             <Link className="flex gap-2 items-center" href={"/game"}>
               <ArrowLeft size={20} /> Go back to home
             </Link>
