@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import XYZ from "@/components/svgs/xyz";
-import { Mesh1 } from "@/components/svgs/mesh";
+import { IndicatorLine, Mesh1, Mesh2, MeshTitle } from "@/components/svgs/mesh";
 
 export default function Home() {
   return (
@@ -26,7 +26,7 @@ export default function Home() {
             <h1 className="text-[60px] font-black text-slate-100 max-w-[650px] leading-tight">
               Never match a word alone
             </h1>
-            <div className="max-w-[736px] text-blue-200 text-2xl font-normal leading-[33.11px]">
+            <div className="max-w-[736px] text-blue-200 text-[20px] leading-[33.11px]">
               Enough being scared of vocabularies? Well, now you got a way to
               scare your friend too. Start a vocabulary battle now!
             </div>
@@ -35,23 +35,93 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <div className="w-auto h-[116px] relative">
-          <div className="w-[375px] h-[116px] pr-12 left-0 top-0 absolute border-r border-slate-800 flex-col justify-start items-start gap-2.5 inline-flex">
-            <div className="text-white text-6xl font-black">100K </div>
-            <div className="text-blue-200 text-2xl font-normal leading-[33.11px]">
+
+        <div className="flex">
+          <div className="pr-12 border-r border-r-slate-800">
+            <h3 className="text-white text-6xl font-black">100K </h3>
+            <p className="text-blue-200 text-[20px] font-normal leading-[33.11px]">
               Match from over 100K words
-            </div>
+            </p>
           </div>
-          <div className="w-[328px] h-[116px] px-12 left-[377px] top-0 absolute flex-col justify-start items-start gap-2.5 inline-flex">
-            <div className="text-white text-6xl font-black">2K</div>
-            <div className="text-blue-200 text-2xl font-normal leading-[33.11px]">
+          <div className="pl-12">
+            <h3 className="text-white text-6xl font-black">2K+ </h3>
+            <p className="text-blue-200 text-[20px] font-normal leading-[33.11px]">
               Join 2K+ word gurus
-            </div>
+            </p>
           </div>
         </div>
 
         <XYZ className="absolute right-0 top-[58px] z-40" />
         <Mesh1 className="absolute left-0 right-0 top-0 z-40" />
+      </div>
+
+      {/* Demo image */}
+      <div className="relative flex justify-center pt-[200px]">
+        <div className="relative z-50 h-auto w-auto p-2.5 rounded-lg border border-[#37466B] inline-block">
+          <Image
+            src="/wordbuzz-demo.svg"
+            alt="wordbuzz demo image"
+            height={795}
+            width={1130}
+            priority={true}
+            className="border border-[#1D2539] rounded-md"
+          />
+        </div>
+        <Mesh2 className="absolute top-0 z-40" />
+      </div>
+
+      <div className="px-[90px] py-[200px]">
+        <div>
+          <p className="text-[20px] text-blue-200">All good</p>
+          <h1 className="text-[60px] leading-tight text-slate-100 font-black">
+            But how do I play?
+          </h1>
+        </div>
+
+        <div className="relative">
+          <div className="flex flex-col gap-[80px] py-[80px] after:h-[300px] relative after:left-[100px] after:w-[580px] after:border-l-4 after:border-[#1D2539] after:block after:absolute after:top-[85%] after:border-b-4 after:border-dashed">
+            <div className="w-full flex justify-start">
+              <div className="border border-[#1D2539] py-6 pl-8 min-w-[580px] rounded-lg">
+                <MeshTitle no={1} />
+                <h3 className="text-[32px] text-slate-100 font-bold mb-4">
+                  Create a new game{" "}
+                </h3>
+                <p className="text-[16px] text-blue-50 max-w-[370px]">
+                  Click on Start battle and then login with your google or
+                  github account. Click on New Game.{" "}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-[80px] py-[80px] after:h-[300px] relative after:right-[100px] after:w-[580px] after:border-r-4 after:border-[#1D2539] after:block after:absolute after:top-[84%] after:border-b-4 after:border-dashed">
+            <div className="w-full flex justify-end">
+              <div className="border border-[#1D2539] py-6 pl-8 min-w-[580px] rounded-lg">
+                <MeshTitle no={2} />
+                <h3 className="text-[32px] text-slate-100 font-bold mb-4">
+                  Invite your friend
+                </h3>
+                <p className="text-[16px] text-blue-50 max-w-[370px]">
+                  Copy the link and share with your friend.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-[80px] pt-[80px]">
+            <div className="w-full flex justify-start">
+              <div className="border border-[#1D2539] py-6 pl-8 min-w-[580px] rounded-lg">
+                <MeshTitle no={3} />
+                <h3 className="text-[32px] text-slate-100 font-bold mb-4">
+                  Start throwing word{" "}
+                </h3>
+                <p className="text-[16px] text-blue-50 max-w-[370px]">
+                  Throw a word and scare your opponent.{" "}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
