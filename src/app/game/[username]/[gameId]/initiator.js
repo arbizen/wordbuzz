@@ -104,15 +104,26 @@ export default function Initiator({ data }) {
   const router = useRouter();
   const [ifExiting, setIfExiting] = useState(false);
 
-  // write a function that takes an array of words and then return three random words from them
-  const getRandomWords = (words) => {
-    const randomWords = [];
-    for (let i = 0; i < 3; i++) {
-      const randomIndex = Math.floor(Math.random() * words.length);
-      randomWords.push(words[randomIndex]);
-    }
-    return randomWords;
-  };
+  useEffect(() => {
+    // handle tab close
+    window.addEventListener("beforeunload", async () => {
+      if (initiatorUsername === loggedUsername) {
+        await client.from("board").delete().eq("gameId", gameId);
+      }
+      if (room) {
+        room.send({
+          type: "broadcast",
+          event: "game-ended",
+          payload: {
+            user: loggedUsername,
+          },
+        });
+      }
+    });
+    return () => {
+      window.removeEventListener("beforeunload", () => {});
+    };
+  }, []);
 
   useEffect(() => {
     setClientOnly(true);
