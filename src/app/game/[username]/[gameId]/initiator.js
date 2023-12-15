@@ -224,8 +224,11 @@ export default function Initiator({ data }) {
     });
   };
 
-  const handleExitGame = () => {
+  const handleExitGame = async () => {
     setIfExiting(true);
+    if (initiatorUsername === loggedUsername) {
+      await client.from("board").delete().eq("gameId", gameId);
+    }
     if (room) {
       room.send({
         type: "broadcast",
