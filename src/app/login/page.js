@@ -47,9 +47,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-start h-screen flex-col bg-[#101619] gap-6 md:gap-8 overflow-hidden">
+    <div className="relative flex items-center justify-center  h-screen flex-col bg-[#101619] gap-[32px] md:gap-8 overflow-hidden">
       <svg
-        className="h-[400px] w-[800px] md:h-[500px] md:w-[1000px]"
+        className="h-[400px] w-[800px] md:h-[500px] md:w-[1000px] absolute top-0 z-40"
         viewBox="0 0 1000 500"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -124,12 +124,15 @@ export default function Login() {
           strokeDasharray="5 10"
         />
       </svg>
-      <div className="space-y-4 flex flex-col">
-        <Button className="min-w-[300px]" onClick={handleGoogleSignIn}>
+      <div className="space-y-4 flex flex-col relative z-50">
+        <Button
+          className="min-w-[300px] md:h-[50px]"
+          onClick={handleGoogleSignIn}
+        >
           Sign In with Google
         </Button>
         <Button
-          className="bg-violet-500 hover:bg-violet-600"
+          className="bg-violet-500 hover:bg-violet-600 md:h-[50px]"
           onClick={handleGithubSignIn}
         >
           Sign In with Github
