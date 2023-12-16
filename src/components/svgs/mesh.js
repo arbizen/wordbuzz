@@ -1,8 +1,6 @@
 export const Mesh1 = ({ className }) => {
   return (
     <svg
-      width="1157"
-      height="976"
       viewBox="0 0 1157 976"
       className={className}
       fill="none"
@@ -153,6 +151,235 @@ export const IndicatorLine = ({ className }) => {
         strokeLinejoin="round"
         strokeDasharray="5 10"
       />
+    </svg>
+  );
+};
+
+export const Grid = ({ className }) => {
+  return (
+    <svg
+      height="455"
+      className={className}
+      viewBox="0 0 1440 455"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        y="1"
+        width="240"
+        height="227"
+        stroke="url(#paint0_linear_92_370)"
+      />
+      <rect
+        y="228"
+        width="240"
+        height="227"
+        stroke="url(#paint1_linear_92_370)"
+      />
+      <rect
+        x="240"
+        y="1"
+        width="240"
+        height="227"
+        stroke="url(#paint2_linear_92_370)"
+      />
+      <rect
+        x="240"
+        y="228"
+        width="240"
+        height="227"
+        stroke="url(#paint3_linear_92_370)"
+      />
+      <rect
+        x="480"
+        y="1"
+        width="240"
+        height="227"
+        stroke="url(#paint4_linear_92_370)"
+      />
+      <rect
+        x="480"
+        y="228"
+        width="240"
+        height="227"
+        stroke="url(#paint5_linear_92_370)"
+      />
+      <rect
+        x="720"
+        y="1"
+        width="240"
+        height="227"
+        stroke="url(#paint6_linear_92_370)"
+      />
+      <rect
+        x="720"
+        y="228"
+        width="240"
+        height="227"
+        stroke="url(#paint7_linear_92_370)"
+      />
+      <rect
+        x="960"
+        y="1"
+        width="240"
+        height="227"
+        stroke="url(#paint8_linear_92_370)"
+      />
+      <rect
+        x="960"
+        y="228"
+        width="240"
+        height="227"
+        stroke="url(#paint9_linear_92_370)"
+      />
+      <rect
+        x="1200"
+        y="1"
+        width="240"
+        height="227"
+        stroke="url(#paint10_linear_92_370)"
+      />
+      <rect
+        x="1200"
+        y="228"
+        width="240"
+        height="227"
+        stroke="url(#paint11_linear_92_370)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_92_370"
+          x1="120"
+          y1="1"
+          x2="120"
+          y2="228"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear_92_370"
+          x1="120"
+          y1="228"
+          x2="120"
+          y2="455"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint2_linear_92_370"
+          x1="360"
+          y1="1"
+          x2="360"
+          y2="228"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint3_linear_92_370"
+          x1="360"
+          y1="228"
+          x2="360"
+          y2="455"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint4_linear_92_370"
+          x1="600"
+          y1="1"
+          x2="600"
+          y2="228"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint5_linear_92_370"
+          x1="600"
+          y1="228"
+          x2="600"
+          y2="455"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint6_linear_92_370"
+          x1="840"
+          y1="1"
+          x2="840"
+          y2="228"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint7_linear_92_370"
+          x1="840"
+          y1="228"
+          x2="840"
+          y2="455"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint8_linear_92_370"
+          x1="1080"
+          y1="1"
+          x2="1080"
+          y2="228"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint9_linear_92_370"
+          x1="1080"
+          y1="228"
+          x2="1080"
+          y2="455"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint10_linear_92_370"
+          x1="1320"
+          y1="1"
+          x2="1320"
+          y2="228"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="paint11_linear_92_370"
+          x1="1320"
+          y1="228"
+          x2="1320"
+          y2="455"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1D2539" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#1D2539" stopOpacity="0" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

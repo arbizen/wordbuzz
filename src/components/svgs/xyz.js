@@ -1,8 +1,6 @@
 export default function XYZ({ className }) {
   return (
     <svg
-      width="717"
-      height="753"
       viewBox="0 0 717 753"
       className={className}
       fill="none"
