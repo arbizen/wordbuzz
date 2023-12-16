@@ -12,6 +12,7 @@ export const metadata = {
   title: "Wordbuzz | Never match a word alone",
   description:
     "Learn english vocabulary by playing with your friends on realtime. Learn from over 100K words.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }) {
