@@ -93,9 +93,9 @@ export default function Home() {
         </div>
 
         <div className="relative">
-          <div className="flex flex-col gap-[80px] py-[80px] after:hidden after:h-[300px] relative after:left-[100px] after:w-[580px] after:border-l-4 after:border-[#1D2539] after:lg:block after:absolute after:top-[85%] after:border-b-4 after:border-dashed">
+          <div className="flex flex-col gap-[80px] py-[80px] z-50 after:z-40 after:hidden after:h-[300px] relative after:left-[100px] after:w-[60%] after:border-l-4 after:border-[#1D2539] after:lg:block after:absolute after:top-[85%] after:border-b-4 after:border-dashed">
             <div className="w-full flex justify-start">
-              <div className="border border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
+              <div className="border bg-[#101619] border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
                 <MeshTitle no={1} />
                 <h3 className="text-[32px] text-slate-100 font-bold mb-4">
                   Create a new game{" "}
@@ -108,9 +108,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-[80px] py-[80px] after:hidden after:h-[300px] relative after:right-[100px] after:w-[580px] after:border-r-4 after:border-[#1D2539] after:lg:block after:absolute after:top-[84%] after:border-b-4 after:border-dashed">
+          <div className="flex flex-col gap-[80px] py-[80px] z-50 after:z-40 after:hidden after:h-[300px] relative after:right-[100px] after:w-[60%] after:border-r-4 after:border-[#1D2539] after:lg:block after:absolute after:top-[84%] after:border-b-4 after:border-dashed">
             <div className="w-full flex justify-end">
-              <div className="border border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
+              <div className="border bg-[#101619] border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
                 <MeshTitle no={2} />
                 <h3 className="text-[32px] text-slate-100 font-bold mb-4">
                   Invite your friend
@@ -122,9 +122,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-[80px] pt-[80px]">
+          <div className="flex flex-col gap-[80px] pt-[80px] relative z-50">
             <div className="w-full flex justify-start">
-              <div className="border border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
+              <div className="border bg-[#101619] border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
                 <MeshTitle no={3} />
                 <h3 className="text-[32px] text-slate-100 font-bold mb-4">
                   Start throwing word{" "}
