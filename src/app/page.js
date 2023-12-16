@@ -18,7 +18,7 @@ export const metadata = {
     type: "website",
   },
   twitter: {
-    title: "Supadraw",
+    title: "Wordbuzz",
     card: "summary_large_image",
   },
   themeColor: "#101619",
