@@ -132,15 +132,15 @@ export default function Initiator({ data }) {
   }, []);
 
   useEffect(() => {
-    const fetchRandomwords = async () => {
-      // fetch random words from /api/words
-      const res = await fetch("/api/words");
-      const data = await res.json();
-      const randomWords = data?.words;
-      console.log(randomWords);
-      setRandomWords(randomWords);
-    };
-    fetchRandomwords();
+    // const fetchRandomwords = async () => {
+    //   // fetch random words from /api/words
+    //   const res = await fetch("/api/words");
+    //   const data = await res.json();
+    //   const randomWords = data?.words;
+    //   console.log(randomWords);
+    //   setRandomWords(randomWords);
+    // };
+    // fetchRandomwords();
   }, [currentRound]);
 
   useEffect(() => {
@@ -338,8 +338,14 @@ export default function Initiator({ data }) {
                 duration={60}
                 colors={["#8B5CF6"]}
                 onComplete={() => {
+                  //setIsDrawingTime(false);
+                  //setIsWordSelectionTimeOut(false);
                   setIsDrawingTime(false);
-                  setIsWordSelectionTimeOut(false);
+                  setDrawnWord(word);
+                  setTimeout(() => {
+                    setDrawnWord(null);
+                    setIsWordSelectionTimeOut(false);
+                  }, 5000);
                 }}
               >
                 {({ remainingTime }) => (
@@ -357,9 +363,7 @@ export default function Initiator({ data }) {
         {isConnected &&
           !isFirstWordSelected &&
           currentRound === loggedUsername &&
-          !isWordSelectionTimeOut && (
-            <Info>Click one of the words to send.</Info>
-          )}
+          !isWordSelectionTimeOut && <Info>Write a word to send.</Info>}
         <div className="flex flex-col items-center justify-center">
           <div className="flex gap-2">
             {drawnWord &&
@@ -475,8 +479,23 @@ export default function Initiator({ data }) {
           currentRound === loggedUsername &&
           !isWordSelectionTimeOut &&
           !isDrawingTime && (
-            <div className="flex gap-2">
-              {randomWords.map((word, i) => (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const word = e.target[0].value;
+                if (word !== "") {
+                  handleWordSelection(word.toUpperCase());
+                }
+              }}
+              className="flex gap-2 w-full h-full px-4"
+            >
+              <input
+                type="text"
+                pattern="^[^\s]+$"
+                className="h-full w-full focus:outline-none uppercase bg-transparent text-blue-500 text-sm text-center"
+                placeholder="Write a word"
+              />
+              {/* {randomWords.map((word, i) => (
                 <Button
                   key={i}
                   onClick={() => {
@@ -488,8 +507,9 @@ export default function Initiator({ data }) {
                 >
                   {word}
                 </Button>
-              ))}
-            </div>
+                
+              ))} */}
+            </form>
           )}
         <div>
           <div className="flex gap-4 items-center">
@@ -501,8 +521,14 @@ export default function Initiator({ data }) {
                 duration={60}
                 colors={["#3B82F6"]}
                 onComplete={() => {
+                  //setIsDrawingTime(false);
+                  //setIsWordSelectionTimeOut(false);
                   setIsDrawingTime(false);
-                  setIsWordSelectionTimeOut(false);
+                  setDrawnWord(word);
+                  setTimeout(() => {
+                    setDrawnWord(null);
+                    setIsWordSelectionTimeOut(false);
+                  }, 5000);
                 }}
               >
                 {({ remainingTime }) => (
@@ -510,7 +536,7 @@ export default function Initiator({ data }) {
                 )}
               </CountdownCircleTimer>
             )}
-            {isConnected &&
+            {/* {isConnected &&
               currentRound === loggedUsername &&
               !isWordSelectionTimeOut &&
               !isDrawingTime && (
@@ -521,20 +547,17 @@ export default function Initiator({ data }) {
                   duration={15}
                   colors={["#3B82F6"]}
                   onComplete={() => {
-                    setIsWordSelectionTimeOut(true);
-                    handleWordSelection(
-                      randomWords[Math.floor(Math.random() * 3)]
-                    );
-                    return {
-                      shouldRepeat: false,
-                    };
+                    // setIsWordSelectionTimeOut(true);
+                    // handleWordSelection(
+                    //   randomWords[Math.floor(Math.random() * 3)]
+                    // );
                   }}
                 >
                   {({ remainingTime }) => (
                     <p className="text-sm text-slate-400">{remainingTime}</p>
                   )}
                 </CountdownCircleTimer>
-              )}
+              )} */}
             <Button
               onClick={handleExitGame}
               className="text-sm hidden md:block"
