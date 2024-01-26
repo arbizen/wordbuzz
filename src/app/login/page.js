@@ -23,9 +23,18 @@ export default function Login() {
     console.log(user);
   };
 
-  const handleLogin = async () => {
+  const handleLoginTushar = async () => {
     const { error, data } = await supabase.auth.signInWithPassword({
       email: "tushar@gmail.com",
+      password: "123456",
+    });
+    console.log("login error", error);
+    router.push("/game");
+  };
+
+  const handleLoginArb = async () => {
+    const { error, data } = await supabase.auth.signInWithPassword({
+      email: "arb@arb.com",
       password: "123456",
     });
     console.log("login error", error);
@@ -125,6 +134,22 @@ export default function Login() {
         />
       </svg>
       <div className="space-y-4 flex flex-col relative z-50">
+        {process.env.NEXT_PUBLIC_NODE_ENV === "development" && (
+          <>
+            <Button
+              className="min-w-[300px] md:h-[50px]"
+              onClick={handleLoginTushar}
+            >
+              Login Tushar
+            </Button>
+            <Button
+              className="min-w-[300px] md:h-[50px]"
+              onClick={handleLoginArb}
+            >
+              Login Arb
+            </Button>
+          </>
+        )}
         <Button
           className="min-w-[300px] md:h-[50px]"
           onClick={handleGoogleSignIn}
