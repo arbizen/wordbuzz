@@ -5,14 +5,15 @@ import XYZ from "@/components/svgs/xyz";
 import { Grid, Mesh1, Mesh2, MeshTitle } from "@/components/svgs/mesh";
 
 export const metadata = {
-  title: "Wordbuzz | Never match a word alone",
+  title:
+    "Wordbuzz | Match words with your partner | Play word game | Play blossom word game",
   description:
-    "Learn english vocabulary by playing with your friends on realtime. Learn from over 100K words.",
+    "Play blossom word game - Match words with your partner. Learn english vocabulary by playing word game. Play secret word game with your partner. Write word and send to your friend to match.",
   openGraph: {
     title: "Wordbuzz",
     description:
-      "Learn english vocabulary by playing with your friends on realtime. Learn from over 100K words.",
-    url: "https://wordbuzz.arbizen.com",
+      "Play blossom word game - Match words with your partner. Learn english vocabulary by playing word game. Play secret word game with your partner. Write word and send to your friend to match.",
+    url: "https://playword.buzz",
     siteName: "Wordbuzz",
     locale: "en-US",
     type: "website",
@@ -41,14 +42,22 @@ export default function Home() {
         <div className="relative h-[calc(100vh_-_75px)] w-full flex items-start pt-[64px] md:pt-0 md:items-center z-50">
           <div className="w-full flex flex-col gap-[36px]">
             <h1 className="text-[48px] lg:text-[60px] font-black text-slate-100 max-w-[100%] md:max-w-[650px] leading-tight">
-              Never match a word alone
+              Match words with your partner
             </h1>
             <div className="max-w-[736px] text-blue-200 text-[18px] md:text-[20px] leading-[33.11px]">
-              Enough being scared of vocabularies? Well, now you got a way to
-              scare your friend too. Start a vocabulary battle now!
+              Send secret word to your partner to match together. Watch them
+              match the word and enjoy while they guess it!
             </div>
-            <Button asChild className="max-w-[165px] h-[50px]">
-              <Link href="/login">Start battle</Link>
+            <Button
+              asChild
+              className="max-w-[165px] h-[50px] bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded p-1"
+            >
+              <Link
+                href="/login"
+                className="flex w-full bg-gray-900 text-white rounded p-2"
+              >
+                Start a word battle
+              </Link>
             </Button>
           </div>
         </div>
@@ -127,10 +136,10 @@ export default function Home() {
               <div className="border bg-[#101619] border-[#1D2539] py-6 pl-8 w-full lg:w-[580px] rounded-lg">
                 <MeshTitle no={3} />
                 <h3 className="text-[32px] text-slate-100 font-bold mb-4">
-                  Start throwing word{" "}
+                  Write a word and send{" "}
                 </h3>
                 <p className="text-[16px] text-blue-50 max-w-[370px]">
-                  Throw a word and scare your opponent.{" "}
+                  Write a word and send it to your opponent to match.{" "}
                 </p>
               </div>
             </div>
