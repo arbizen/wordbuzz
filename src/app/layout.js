@@ -9,9 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Wordbuzz | Never match a word alone",
+  title: "Wordbuzz | Match words with your partner",
   description:
-    "Learn english vocabulary by playing with your friends on realtime. Learn from over 100K words.",
+    "Play blossom word game - Match words with your partner. Learn english vocabulary by playing word game. Play secret word game with your partner. Write word and send to your friend to match.",
   manifest: "/manifest.json",
 };
 
