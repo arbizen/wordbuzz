@@ -8,10 +8,15 @@ export async function GET() {
   const model = genAi.getGenerativeModel({
     model: "gemini-pro",
   });
-  const prompt = `suggest random words for a word game separated by commas`;
+  const prompt = `Suggest a random word from a given context and language. The response format should be just "word = random_word".
+  language: russian
+  context: happy
+  random word:
+  `;
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const text = response.text();
-  const words = text.split(",").map((word) => word.trim().toUpperCase());
-  return NextResponse.json({ words: words });
+  return NextResponse.json({
+    data: text,
+  });
 }
