@@ -9,7 +9,7 @@ import Circle from "@/components/board/shapes/Circle";
 import { BoardContext } from "@/contexts/boardContext";
 import RenderWord from "@/components/board/RenderWord";
 import { supabaseClient } from "@/supabase/client";
-import { Button } from "@/components/ui/Button";
+import { Button } from "../ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
