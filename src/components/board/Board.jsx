@@ -757,7 +757,7 @@ export default function BoardView({ data }) {
                           <span className="text-blue-500">
                             {opponent?.name.split(" ")[0]}
                           </span>{" "}
-                          is matching a word...
+                          is matching the word...
                         </>
                       ) : (
                         <>
