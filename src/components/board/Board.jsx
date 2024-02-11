@@ -474,7 +474,7 @@ export default function BoardView({ data }) {
     if (!hintOrReply) {
       if (wordInputValue) {
         setShowInput(false);
-        const word = wordInputValue.toUpperCase();
+        const word = wordInputValue.toUpperCase().trim();
         room.current.send({
           type: "broadcast",
           event: "sendWord",
@@ -501,11 +501,6 @@ export default function BoardView({ data }) {
             hint: hintOrReply,
           },
         });
-        // setRealtimeHint(hintOrReply);
-        // setTimeout(() => {
-        //   setRealtimeHint("");
-        // }, 3500);
-        // setHintOrReply("");
         setHintOrReply("");
       }
     }
