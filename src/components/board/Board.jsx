@@ -109,7 +109,7 @@ export default function BoardView({ data }) {
       }
     }
 
-    if (!isMatching.current || !canDraw.current) {
+    if (!isMatching.current || !canDraw.current || round === 0) {
       return;
     }
 
@@ -174,7 +174,7 @@ export default function BoardView({ data }) {
 
   const handleMouseUp = () => {
     setIsReleased(true);
-    if (isMatching.current) {
+    if (isMatching.current && round === 1) {
       canDraw.current = false;
       setTimeout(() => {
         room.current.send({
