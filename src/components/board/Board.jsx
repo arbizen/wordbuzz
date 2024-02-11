@@ -495,7 +495,7 @@ export default function BoardView({ data }) {
         setPlaceholder("Please enter a word...");
       }
     } else {
-      if (!(!showBoard && round === 0) && realtimeHint === "") {
+      if (realtimeHint === "") {
         room.current.send({
           type: "broadcast",
           event: "sendHint",
@@ -834,10 +834,7 @@ export default function BoardView({ data }) {
                       )}
                       <button
                         className={cn(
-                          "h-[35px] w-[35px] rounded-md flex items-center justify-center p-2 bg-[#5E50FF]",
-                          !showBoard &&
-                            round === 0 &&
-                            "cursor-not-allowed bg-[#32365B]"
+                          "h-[35px] w-[35px] rounded-md flex items-center justify-center p-2 bg-[#5E50FF]"
                         )}
                         onClick={handleSubmit}
                         type="submit"
