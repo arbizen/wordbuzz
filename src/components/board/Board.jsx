@@ -286,7 +286,7 @@ export default function BoardView({ data }) {
         if (id !== loggedUserId) {
           console.log("I am reaching here");
 
-          //setIsReleased(true);
+          setIsReleased(true);
           if (isMatching.current) {
             //canDraw.current = false;
             setTimeout(() => {
