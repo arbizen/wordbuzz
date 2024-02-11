@@ -17,8 +17,8 @@ export function generateCirclesForWord(
     const letter = shuffledWord[i];
     const angle = i * angleIncrement;
 
-    const x = centerX + Math.cos(angle) * (canvasWidth / 3);
-    const y = centerY + Math.sin(angle) * (canvasHeight / 3);
+    const x = centerX + Math.cos(angle) * (canvasWidth / 2.5);
+    const y = centerY + Math.sin(angle) * (canvasHeight / 2.5);
 
     const newCircle = {
       pos: { x, y },

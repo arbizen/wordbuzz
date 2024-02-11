@@ -2,6 +2,7 @@
 
 const withPWA = require("next-pwa")({
   dest: "public",
+  disableDevLogs: true,
 });
 
 const nextConfig = {
