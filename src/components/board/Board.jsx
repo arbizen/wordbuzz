@@ -42,7 +42,7 @@ export default function BoardView({ data }) {
   const [circlesState, setCirclesState] = useState([]);
   const [isReleased, setIsReleased] = useState(false);
   const [showBoard, setShowBoard] = useState(false);
-  const [round, setRound] = useState(1); // 0 for opponent, 1 for me
+  const [round, setRound] = useState(null); // 0 for opponent, 1 for me
   const [lifeCount, setLifeCount] = useState(LIFE_COUNT);
   const enableRealtime = useRef(true);
   const [visualPoints, setVisualPoints] = useState("");
@@ -75,7 +75,7 @@ export default function BoardView({ data }) {
   const lastWordSenderId = useRef(null);
 
   const handleMouseDown = (circle) => {
-    if (canDraw.current && round === 1) {
+    if (!isMatching.current && canDraw.current && !(round === 0)) {
       setIsReleased(false);
       isMatching.current = true;
       setIsMatchingState(true);
@@ -173,8 +173,8 @@ export default function BoardView({ data }) {
   };
 
   const handleMouseUp = () => {
-    setIsReleased(true);
-    if (isMatching.current && round === 1) {
+    if (isMatching.current && canDraw.current && !(round === 0)) {
+      setIsReleased(true);
       canDraw.current = false;
       setTimeout(() => {
         room.current.send({
@@ -196,17 +196,16 @@ export default function BoardView({ data }) {
         setMatchedWordState("");
         canDraw.current = true;
       }, 1000);
-    }
-
-    if (enableRealtime.current) {
-      // send the points and the mouse event to the channel
-      room.current.send({
-        type: "broadcast",
-        event: "onMouseUp",
-        payload: {
-          id: loggedUserId,
-        },
-      });
+      if (enableRealtime.current) {
+        // send the points and the mouse event to the channel
+        room.current.send({
+          type: "broadcast",
+          event: "onMouseUp",
+          payload: {
+            id: loggedUserId,
+          },
+        });
+      }
     }
   };
 
@@ -285,9 +284,11 @@ export default function BoardView({ data }) {
       room.current.on("broadcast", { event: "onMouseUp" }, ({ payload }) => {
         const id = payload?.id;
         if (id !== loggedUserId) {
-          setIsReleased(true);
+          console.log("I am reaching here");
+
+          //setIsReleased(true);
           if (isMatching.current) {
-            canDraw.current = false;
+            //canDraw.current = false;
             setTimeout(() => {
               isMatching.current = false;
               setIsMatchingState(false);
@@ -297,7 +298,7 @@ export default function BoardView({ data }) {
               points.current = "";
               matchedWord.current = "";
               setMatchedWordState("");
-              canDraw.current = true;
+              //canDraw.current = true;
             }, 1000);
           }
         }
@@ -336,9 +337,11 @@ export default function BoardView({ data }) {
         // word sender round is decided by the setShowInput state
         if (id === loggedUserId) {
           // word sender
+          canDraw.current = false;
           setRound(0);
         } else {
           // word receiver
+          canDraw.current = true;
           setRound(1);
         }
       });
