@@ -74,6 +74,24 @@ export default function BoardView({ data }) {
   const opponentJoinedRef = useRef(opponentJoined);
   const lastWordSenderId = useRef(null);
 
+  const clearUp = () => {
+    setIsReleased(true);
+    if (isMatching.current) {
+      canDraw.current = false;
+      setTimeout(() => {
+        isMatching.current = false;
+        setIsMatchingState(false);
+        setInitialPosState(null);
+        setMousePositionState(null);
+        updatedInitialPos.current = null;
+        points.current = "";
+        matchedWord.current = "";
+        setMatchedWordState("");
+        canDraw.current = true;
+      }, 1000);
+    }
+  };
+
   const handleMouseDown = (circle) => {
     if (!isMatching.current && canDraw.current && !(round === 0)) {
       setIsReleased(false);
@@ -174,28 +192,7 @@ export default function BoardView({ data }) {
 
   const handleMouseUp = () => {
     if (isMatching.current && canDraw.current && !(round === 0)) {
-      setIsReleased(true);
-      canDraw.current = false;
-      setTimeout(() => {
-        room.current.send({
-          type: "broadcast",
-          event: "correctWord",
-          payload: {
-            id: loggedUserId,
-            matchedWord: matchedWord.current,
-            word,
-          },
-        });
-
-        isMatching.current = false;
-        setIsMatchingState(false);
-        setInitialPosState(null);
-        setMousePositionState(null);
-        points.current = "";
-        matchedWord.current = "";
-        setMatchedWordState("");
-        canDraw.current = true;
-      }, 1000);
+      clearUp();
       if (enableRealtime.current) {
         // send the points and the mouse event to the channel
         room.current.send({
@@ -284,23 +281,7 @@ export default function BoardView({ data }) {
       room.current.on("broadcast", { event: "onMouseUp" }, ({ payload }) => {
         const id = payload?.id;
         if (id !== loggedUserId) {
-          console.log("I am reaching here");
-
-          setIsReleased(true);
-          if (isMatching.current) {
-            //canDraw.current = false;
-            setTimeout(() => {
-              isMatching.current = false;
-              setIsMatchingState(false);
-              setInitialPosState(null);
-              setMousePositionState(null);
-              updatedInitialPos.current = null;
-              points.current = "";
-              matchedWord.current = "";
-              setMatchedWordState("");
-              //canDraw.current = true;
-            }, 1000);
-          }
+          clearUp();
         }
       });
 
@@ -382,8 +363,10 @@ export default function BoardView({ data }) {
         setShowBoard(false);
         // set the game over state
         setIsGameOver(true);
+        // clear everything
+        clearUp();
+        // show the input to the player who just lost to enter the next word
         if (id === loggedUserId) {
-          // show the input to the player who just lost to enter the next word
           setShowInput(true);
         }
       });
@@ -568,16 +551,6 @@ export default function BoardView({ data }) {
           onTouchMove={handleMouseMove}
           ref={svgRef}
         >
-          {/* {showBoard &&
-            Array.from({ length: lifeCount }).map((_, index) => (
-              <motion.circle
-                key={index}
-                cx={window.innerWidth - 100 - index * 25}
-                cy={50}
-                r={8}
-                fill={round === 0 ? OPPONENT_COLOR : MYCOLOR}
-              />
-            ))} */}
           <RenderWord
             letters={word}
             word={word}
