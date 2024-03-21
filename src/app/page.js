@@ -42,7 +42,7 @@ export default function Home() {
         <div className="relative h-[calc(100vh_-_75px)] w-full flex items-start pt-[64px] md:pt-0 md:items-center z-50">
           <div className="w-full flex flex-col gap-[36px]">
             <h1 className="text-[48px] lg:text-[60px] font-black text-slate-100 max-w-[100%] md:max-w-[650px] leading-tight">
-              Match words with your partner
+              Play word game with your partner!
             </h1>
             <div className="max-w-[736px] text-blue-200 text-[18px] md:text-[20px] leading-[33.11px]">
               Send secret word to your partner to match together. Watch them
